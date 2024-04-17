@@ -27,6 +27,8 @@ const url = require("url");
 /////////////////////////
 
 //SERVER
+const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8"); // written as synchronous because this is loaded only once
+const dataObj = JSON.parse(data);
 const server = http.createServer((req, res) => {
   console.log(req.url);
 
@@ -35,7 +37,13 @@ const server = http.createServer((req, res) => {
   if (pathName === "/" || pathName === "/overview")
     res.end("Hello from the OVERVIEW");
   else if (pathName === "/product") res.end("Hello from the PRODUCT");
-  else {
+  else if (pathName === "/api") {
+    res.writeHead(200, {
+      "Content-type": "application/json",
+    });
+    res.end(data);
+    // res.end("API");
+  } else {
     res.writeHead(404, {
       "Content-type": "text/html",
     });
