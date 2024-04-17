@@ -1,5 +1,6 @@
 const fs = require("fs");
-const https = require("http");
+const http = require("http");
+const url = require("url");
 
 /******************************/
 /******** Synchronous *********/
@@ -26,8 +27,20 @@ const https = require("http");
 /////////////////////////
 
 //SERVER
-const server = https.createServer((req, res) => {
-  res.end("Hellp from the server");
+const server = http.createServer((req, res) => {
+  console.log(req.url);
+
+  const pathName = req.url;
+
+  if (pathName === "/" || pathName === "/overview")
+    res.end("Hello from the OVERVIEW");
+  else if (pathName === "/product") res.end("Hello from the PRODUCT");
+  else {
+    res.writeHead(404, {
+      "Content-type": "text/html",
+    });
+    res.end("<h1>PAGE NOT FOUND<h1>");
+  }
 });
 
 server.listen(8000, "127.0.0.1", () => {
