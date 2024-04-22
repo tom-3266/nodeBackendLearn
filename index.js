@@ -30,11 +30,16 @@ const replaceTemplate = require("./modules/replaceTemplate");
 //SERVER
 
 const tempOverview = fs.readFileSync(
-  `${__dirname}/templates/template-overview.html`
+  `${__dirname}/templates/template-overview.html`,
+  "utf-8"
 );
-const tempCards = fs.readFileSync(`${__dirname}/templates/template-card.html`);
+const tempCards = fs.readFileSync(
+  `${__dirname}/templates/template-card.html`,
+  "utf-8"
+);
 const tempProducts = fs.readFileSync(
-  `${__dirname}/templates/template-product.html`
+  `${__dirname}/templates/template-product.html`,
+  "utf-8"
 );
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8"); // written as synchronous because this is loaded only once
 const dataObj = JSON.parse(data);
@@ -47,14 +52,17 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, {
       "Content-type": "text/html",
     });
-    const cardsHtml = data.map((el) => replaceTemplate(tempCards, el)).join("");
-    const output = tempOverview.replace("{%PRODUCTCARDS%}", cardsHtml);
+
+    const cardsHtml = dataObj
+      .map((el) => replaceTemplate(tempCards, el))
+      .join("");
+    const output = tempOverview.replace("{%PRODUCT_CARDS%}", cardsHtml);
     res.end(output);
   }
   //PRODUCT
   else if (pathname === "/product") {
     console.log(query);
-    const product = data[query.id];
+    const product = dataObj[query.id];
     const output = replaceTemplate(tempProducts, product);
     res.end(output);
   }
