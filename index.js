@@ -1,6 +1,7 @@
 const fs = require("fs");
 const http = require("http");
 const url = require("url");
+const replaceTemplate = require("./modules/replaceTemplate");
 
 /******************************/
 /******** Synchronous *********/
@@ -28,7 +29,7 @@ const url = require("url");
 
 //SERVER
 
-const tempOnverview = fs.readFileSync(
+const tempOverview = fs.readFileSync(
   `${__dirname}/templates/template-overview.html`
 );
 const tempCards = fs.readFileSync(`${__dirname}/templates/template-card.html`);
@@ -38,22 +39,27 @@ const tempProducts = fs.readFileSync(
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8"); // written as synchronous because this is loaded only once
 const dataObj = JSON.parse(data);
 const server = http.createServer((req, res) => {
-  console.log(req.url);
+  const { query, pathname } = url.parse(req.url, true);
 
-  const pathName = req.url;
+  // const pathName = req.url;
   //OVERVIEW
-  if (pathName === "/" || pathName === "/overview") {
+  if (pathname === "/" || pathname === "/overview") {
     res.writeHead(200, {
       "Content-type": "text/html",
     });
-    res.end(tempOnverview);
+    const cardsHtml = data.map((el) => replaceTemplate(tempCards, el)).join("");
+    const output = tempOverview.replace("{%PRODUCTCARDS%}", cardsHtml);
+    res.end(output);
   }
   //PRODUCT
-  else if (pathName === "/product") {
-    res.end("Hello from the PRODUCT");
+  else if (pathname === "/product") {
+    console.log(query);
+    const product = data[query.id];
+    const output = replaceTemplate(tempProducts, product);
+    res.end(output);
   }
   //API
-  else if (pathName === "/api") {
+  else if (pathname === "/api") {
     res.writeHead(200, {
       "Content-type": "application/json",
     });
