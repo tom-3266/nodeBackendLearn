@@ -21,6 +21,10 @@ app.use((req, res, next) => {
   next();
 });
 
+//MOUNTING THE ROUTER
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
+
 // app.get('/', (req, res) => {
 //   res
 //     .status(200)
@@ -40,10 +44,6 @@ app.use((req, res, next) => {
 // app.post('/api/v1/tours', createNewTour);
 // app.patch('/api/v1/tours/:id', updateTour);
 // app.delete('/api/v1/tours/:id', deleteTour);
-
-//MOUNTING THE ROUTER
-app.use('/api/v1/tours', tourRouter);
-app.use('/api/v1/users', userRouter);
 
 //START SERVER
 const port = 3000;
