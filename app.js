@@ -25,28 +25,4 @@ app.use((req, res, next) => {
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
-// app.get('/', (req, res) => {
-//   res
-//     .status(200)
-//     .send({ message: 'Hello from the server side...', app: 'natours' });
-// });
-
-// app.post('/', (req, res) => {
-//   res.send({ message: 'You can post to this api' });
-// });
-
-//ROUTE HANDLER
-//IMPLEMENTED IN SEPARATE FILE IN RUTER FOLDER
-//ROUTES
-//IMPLEMENTED IN SEPARATE FILE IN RUTER FOLDER
-// app.get('/api/v1/tours', getAllTours);
-// app.get('/api/v1/tours/:id', getToursById);
-// app.post('/api/v1/tours', createNewTour);
-// app.patch('/api/v1/tours/:id', updateTour);
-// app.delete('/api/v1/tours/:id', deleteTour);
-
-//START SERVER
-const port = 3000;
-app.listen(port, () => {
-  console.log(`App running on port ${port}`);
-});
+module.exports = app;
