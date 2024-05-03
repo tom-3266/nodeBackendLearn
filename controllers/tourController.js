@@ -4,8 +4,30 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );
 
+exports.checkId = (req, res, next, val) => {
+  const id = req.params.id * 1;
+  console.log(`The route ID is ${val}`);
+  if (id > tours.length) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'no data found',
+    });
+  }
+  next();
+};
+
+exports.checkBody = (req, res, next) => {
+  if (!req.body.name || !req.body.price) {
+    res.status(400).json({
+      status: 'fail',
+      message: 'Name or price is missing',
+    });
+  }
+  next();
+};
+
 exports.getAllTours = (req, res) => {
-  console.log(req.requestTime);
+  console.log('get all tours run at ' + req.requestTime);
   res.status(200).json({
     status: 'success',
     requestTime: req.requestTime,
@@ -15,13 +37,7 @@ exports.getAllTours = (req, res) => {
 };
 
 exports.getToursById = (req, res) => {
-  const id = req.params.id * 1;
-  if (id > tours.length) {
-    res.status(404).json({
-      status: 'fail',
-      message: 'no data found',
-    });
-  }
+  const id = Number(req.params.id);
   const tour = tours.find((el) => el.id === id);
   res.status(200).json({
     status: 'success',
@@ -35,7 +51,7 @@ exports.createNewTour = (req, res) => {
   const newTour = Object.assign({ id: id }, req.body);
   tours.push(newTour);
   fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
+    `${__dirname}/../dev-data/data/tours-simple.json`,
     JSON.stringify(tours),
     (err) => {
       if (err) {
@@ -55,13 +71,6 @@ exports.createNewTour = (req, res) => {
 };
 
 exports.updateTour = (req, res) => {
-  const id = req.params.id * 1;
-  if (id > tours.length) {
-    res.status(404).json({
-      status: 'fail',
-      message: 'no data found',
-    });
-  }
   res.status(200).json({
     status: 'success',
     data: {
@@ -71,13 +80,6 @@ exports.updateTour = (req, res) => {
 };
 
 exports.deleteTour = (req, res) => {
-  const id = req.params.id * 1;
-  if (id > tours.length) {
-    res.status(404).json({
-      status: 'fail',
-      message: 'no data found',
-    });
-  }
   res.status(204).json({
     status: 'success',
     data: null,
